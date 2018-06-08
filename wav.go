@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"fmt"
+	"encoding/binary"
 )
 
 type Wav struct {
@@ -13,16 +13,33 @@ type Wav struct {
 }
 
 func NewWav() *Wav {
-	wav := &Wav {}
-	wav.head = make([]byte, 44)
-	return wav
+	w := &Wav {}
+	w.fsize = 0
+	w.dsize = 0
+	w.head = make([]byte, 44)
+	return w
 }
 
 func (w *Wav) load(file string) {
+
+	var fsz []byte = make([]byte, 4)
+	var dsz []byte = make([]byte, 4)
+
 	f, _ := os.Open(file)
 	defer f.Close()
 	f.Read(w.head)
-	fmt.Println("head:\n", w.head)
+
+	for i := 0; i < 4; i++ {
+		fsz[i] = w.head[i + 4]
+		dsz[i] = w.head[i + 40]
+	}
+
+	w.fsize = binary.LittleEndian.Uint32(fsz)
+	w.dsize = binary.LittleEndian.Uint32(dsz)
+
+	w.data = make([]byte, w.dsize)
+	f.ReadAt(w.data, 44)
+
 }
 
 func main() {
