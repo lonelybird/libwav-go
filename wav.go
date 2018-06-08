@@ -1,5 +1,5 @@
 package wav
 
-struct Wav {
+type Wav struct {
 	head *[]byte
 }
