@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"fmt"
 	"encoding/binary"
 )
 
@@ -42,7 +43,34 @@ func (w *Wav) load(file string) {
 
 }
 
+func (self *Wav) save(file string) {
+	
+}
+
+func (self *Wav) mix(other *Wav) {
+
+	var i uint32
+
+	if other.dsize > self.dsize {
+
+		for i = 0; i < self.dsize; i++ {
+			self.data[i] = uint8(self.data[i] + other.data[i])
+		}
+
+	} else {
+
+		for i = 0; i < other.dsize; i++ {
+			self.data[i] = uint8(self.data[i] + other.data[i])
+		}
+
+	}
+
+}
+
 func main() {
 	w := NewWav()
 	w.load("../lua/pb/8b/8b_1.wav")
+	o := NewWav()
+	o.load("../lua/pb/8b/8b_2.wav")
+	w.mix(o)
 }
