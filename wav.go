@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"fmt"
+	//"fmt"
 	"encoding/binary"
 )
 
@@ -69,8 +69,8 @@ func (self *Wav) mix(other *Wav) {
 
 func main() {
 	w := NewWav()
-	w.load("../lua/pb/8b/8b_1.wav")
+	w.load("../heart of steel.wav")
 	o := NewWav()
-	o.load("../lua/pb/8b/8b_2.wav")
+	o.load("../heart of steel.wav")
 	w.mix(o)
 }
