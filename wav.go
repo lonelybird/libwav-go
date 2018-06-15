@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	//"fmt"
+	"fmt"
 	"encoding/binary"
 )
 
@@ -21,7 +21,7 @@ func NewWav() *Wav {
 	return w
 }
 
-func (w *Wav) load(file string) {
+func (w *Wav) Load(file string) {
 
 	var fsz []byte = make([]byte, 4)
 	var dsz []byte = make([]byte, 4)
@@ -38,16 +38,21 @@ func (w *Wav) load(file string) {
 	w.fsize = binary.LittleEndian.Uint32(fsz)
 	w.dsize = binary.LittleEndian.Uint32(dsz)
 
+	fmt.Println(w.fsize, w.dsize)
+
 	w.data = make([]byte, w.dsize)
 	f.ReadAt(w.data, 44)
 
 }
 
-func (self *Wav) save(file string) {
-	
+func (self *Wav) Save(wfilen string) {
+	wfile, _ := os.Create(wfilen)
+	defer wfile.Close()
+	wfile.Write(self.head)
+	wfile.WriteAt(self.data, 44)
 }
 
-func (self *Wav) mix(other *Wav) {
+func (self *Wav) Mix(other *Wav) {
 
 	var i uint32
 
@@ -69,8 +74,6 @@ func (self *Wav) mix(other *Wav) {
 
 func main() {
 	w := NewWav()
-	w.load("../heart of steel.wav")
-	o := NewWav()
-	o.load("../heart of steel.wav")
-	w.mix(o)
+	w.Load("../heart of steel.wav")
+	w.Save("./hh.wav")
 }
