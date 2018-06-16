@@ -2,7 +2,6 @@ package WAV
 
 import (
 	"os"
-	"fmt"
 	"encoding/binary"
 )
 
@@ -37,8 +36,6 @@ func (self *Wav) Load(file string) {
 
 	self.fsize = binary.LittleEndian.Uint32(fsz)
 	self.dsize = binary.LittleEndian.Uint32(dsz)
-
-	fmt.Println(self.fsize, self.dsize)
 
 	self.data = make([]byte, self.dsize)
 	f.ReadAt(self.data, 44)
