@@ -1,4 +1,4 @@
-package main
+package WAV
 
 import (
 	"os"
@@ -21,27 +21,27 @@ func NewWav() *Wav {
 	return w
 }
 
-func (w *Wav) Load(file string) {
+func (self *Wav) Load(file string) {
 
 	var fsz []byte = make([]byte, 4)
 	var dsz []byte = make([]byte, 4)
 
 	f, _ := os.Open(file)
 	defer f.Close()
-	f.Read(w.head)
+	f.Read(self.head)
 
 	for i := 0; i < 4; i++ {
-		fsz[i] = w.head[i + 4]
-		dsz[i] = w.head[i + 40]
+		fsz[i] = self.head[i + 4]
+		dsz[i] = self.head[i + 40]
 	}
 
-	w.fsize = binary.LittleEndian.Uint32(fsz)
-	w.dsize = binary.LittleEndian.Uint32(dsz)
+	self.fsize = binary.LittleEndian.Uint32(fsz)
+	self.dsize = binary.LittleEndian.Uint32(dsz)
 
-	fmt.Println(w.fsize, w.dsize)
+	fmt.Println(self.fsize, self.dsize)
 
-	w.data = make([]byte, w.dsize)
-	f.ReadAt(w.data, 44)
+	self.data = make([]byte, self.dsize)
+	f.ReadAt(self.data, 44)
 
 }
 
@@ -72,8 +72,20 @@ func (self *Wav) Mix(other *Wav) {
 
 }
 
-func main() {
-	w := NewWav()
-	w.Load("../heart of steel.wav")
-	w.Save("./hh.wav")
+func (self *Wav) Splice(other *Wav) {
+	newfsz := make([]byte, 4)
+	newdsz := make([]byte, 4)
+
+	self.fsize += (other.fsize + 8)
+	self.dsize += other.dsize
+
+	binary.LittleEndian.PutUint32(newfsz, self.fsize)
+	binary.LittleEndian.PutUint32(newdsz, self.dsize)
+
+	for i := 0; i < 4; i++ {
+		self.head[i + 4] = newfsz[i]
+		self.head[i + 40] = newdsz[i]
+	}
+
+	self.data = append(self.data, other.data...)
 }
