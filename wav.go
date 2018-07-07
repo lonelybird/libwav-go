@@ -49,26 +49,6 @@ func (self *Wav) Save(wfilen string) {
 	wfile.WriteAt(self.data, 44)
 }
 
-func (self *Wav) Mix(other *Wav) {
-
-	var i uint32
-
-	if other.dsize > self.dsize {
-
-		for i = 0; i < self.dsize; i++ {
-			self.data[i] = uint8(self.data[i] + other.data[i])
-		}
-
-	} else {
-
-		for i = 0; i < other.dsize; i++ {
-			self.data[i] = uint8(self.data[i] + other.data[i])
-		}
-
-	}
-
-}
-
 func (self *Wav) Splice(other *Wav) {
 	newfsz := make([]byte, 4)
 	newdsz := make([]byte, 4)
