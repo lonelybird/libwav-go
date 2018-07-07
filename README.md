@@ -1,4 +1,4 @@
-# 基于golang的wav文件操作库
+# 基于golang的wav音频
 示例:
 ```go
 /*
